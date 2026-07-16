@@ -1,0 +1,200 @@
+// auth.scss — shares the token system defined in interview.scss (:root vars)
+// If these two files don't share a global scope in your build, copy the
+// :root block from interview.scss to a common file imported by both.
+
+.auth {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--bg);
+  background-image:
+    radial-gradient(circle at 12% -5%, rgba(167, 139, 250, 0.12), transparent 40%),
+    radial-gradient(circle at 88% 10%, rgba(34, 211, 238, 0.08), transparent 35%);
+  font-family: var(--font-body);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 40px 36px;
+}
+
+.auth-header {
+  margin-bottom: 28px;
+
+  .auth-mark {
+    display: block;
+    width: 36px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--accent-gradient);
+    margin-bottom: 18px;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0 0 8px;
+  }
+
+  .auth-subtitle {
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    margin: 0;
+    line-height: 1.5;
+  }
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 18px;
+
+  label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-dim);
+  }
+
+  input {
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    padding: 11px 14px;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+
+    &::placeholder {
+      color: var(--text-faint);
+    }
+
+    &:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.password-field {
+  position: relative;
+  display: flex;
+
+  input {
+    width: 100%;
+    padding-right: 42px;
+  }
+
+  .password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 4px;
+    display: flex;
+    color: var(--text-faint);
+    cursor: pointer;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    &:hover {
+      color: var(--text-dim);
+    }
+  }
+}
+
+.form-error {
+  font-size: 0.82rem;
+  color: var(--bad);
+  background: rgba(251, 113, 133, 0.1);
+  border: 1px solid rgba(251, 113, 133, 0.25);
+  border-radius: 6px;
+  padding: 9px 12px;
+  margin: -4px 0 18px;
+}
+
+.primary-button {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: linear-gradient(var(--surface), var(--surface)) padding-box,
+              var(--accent-gradient) border-box;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+
+  &:hover:not(:disabled) {
+    background: var(--accent-gradient);
+    color: var(--bg);
+    box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+.btn-spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(242, 241, 248, 0.3);
+  border-top-color: var(--text);
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.auth-footer {
+  margin-top: 22px;
+  text-align: center;
+  font-size: 0.86rem;
+  color: var(--text-dim);
+
+  a {
+    color: var(--accent-2);
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

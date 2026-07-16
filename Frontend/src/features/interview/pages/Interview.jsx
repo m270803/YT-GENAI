@@ -3,25 +3,38 @@ import { useParams } from 'react-router'
 import "../style/interview.scss"
 import { useInterview } from '../hook/useInterview'
 
-// Expected shape of the interview report data (from backend / DB):
-// {
-//   jobDescription: string,
-//   resume: string,
-//   selfDescription: string,
-//   matchScore: number,
-//   technicalQuestions: [{ question: string, answer: string }],
-//   behavioralQuestions: [{ question: string, answer: string }],
-//   skillGaps: [string],
-//   preparationPlan: [{ title: string, description: string }]
-// }
-
 const NAV_ITEMS = [
-  { key: "technical", label: "Technical questions" },
-  { key: "behavioral", label: "Behavioral questions" },
-  { key: "roadmap", label: "Road Map" },
+  {
+    key: "technical",
+    label: "Technical",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+        <path d="M9 6 3 12l6 6M15 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
+  {
+    key: "behavioral",
+    label: "Behavioral",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
+  {
+    key: "roadmap",
+    label: "Road Map",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+        <path d="M9 20V10M9 10 4 8v10l5 2M9 10l6-3M15 20V10M15 10l5-2v10l-5 2M15 10l-6-3" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
 ]
 
 // Fallback data shown when no report has been generated yet / API returns nothing
+// NOTE: shapes match exactly what renderMainContent() and the right sidebar expect
 const SAMPLE_DATA = {
   matchScore: 78,
   technicalQuestions: [
@@ -50,23 +63,36 @@ const SAMPLE_DATA = {
   ],
   preparationPlan: [
     {
-      title: "Strengthen SQL fundamentals",
-      description: "Practice joins, window functions, and query optimization using a mock dataset for 3-4 days."
+      day: "Day 1–2",
+      focus: "Strengthen SQL fundamentals",
+      topics: ["Joins", "Window functions", "Query optimization"],
+      tasks: ["Practice 10 join-based problems on a mock dataset", "Rewrite 3 slow queries using EXPLAIN"],
     },
     {
-      title: "Review core Data Structures & Algorithms",
-      description: "Revisit arrays, hashmaps, trees, and common patterns like two-pointer and sliding window."
+      day: "Day 3",
+      focus: "Core data structures & algorithms",
+      topics: ["Arrays", "Hashmaps", "Trees"],
+      tasks: ["Solve 5 problems using two-pointer / sliding window patterns"],
     },
     {
-      title: "Mock behavioral interviews",
-      description: "Prepare 4-5 STAR stories covering teamwork, conflict, failure, and leadership."
+      day: "Day 4",
+      focus: "Mock behavioral interviews",
+      topics: ["STAR method"],
+      tasks: ["Prepare 4–5 STAR stories covering teamwork, conflict, failure, leadership"],
     },
     {
-      title: "Review your own projects deeply",
-      description: "Be ready to explain design decisions, trade-offs, and challenges in EduSage and ReceiptAI."
+      day: "Day 5",
+      focus: "Review your own projects deeply",
+      topics: ["EduSage", "ReceiptAI"],
+      tasks: ["Be ready to explain design decisions, trade-offs, and challenges"],
     },
   ],
-  skillGaps: ["Redis", "Message Queue", "Event Loop", "System Design"],
+  skillGaps: [
+    { skill: "Redis", severity: "high", notes: "Not mentioned in resume; appears as a requirement in the JD." },
+    { skill: "Message Queue", severity: "medium", notes: "Some exposure implied but not explicit." },
+    { skill: "Event Loop", severity: "medium", notes: "Core JS concept worth reviewing before the interview." },
+    { skill: "System Design", severity: "high", notes: "No large-scale design experience listed." },
+  ],
 }
 
 const Interview = () => {
@@ -99,8 +125,9 @@ const Interview = () => {
 
   if (loading) {
     return (
-      <main className='loading-screen'>
-        <h1>Loading ...</h1>
+      <main className="loading-screen">
+        <div className="loading-mark" />
+        <p>Preparing your report…</p>
       </main>
     )
   }
@@ -114,7 +141,7 @@ const Interview = () => {
         <div className="qa-list">
           {technicalQuestions.map((item, idx) => (
             <div className="qa-item" key={idx}>
-              <p className="question">{idx + 1}. {item.question}</p>
+              <p className="question"><span className="q-index">{String(idx + 1).padStart(2, "0")}</span>{item.question}</p>
               {item.answer && <p className="answer">{item.answer}</p>}
             </div>
           ))}
@@ -130,7 +157,7 @@ const Interview = () => {
         <div className="qa-list">
           {behavioralQuestions.map((item, idx) => (
             <div className="qa-item" key={idx}>
-              <p className="question">{idx + 1}. {item.question}</p>
+              <p className="question"><span className="q-index">{String(idx + 1).padStart(2, "0")}</span>{item.question}</p>
               {item.answer && <p className="answer">{item.answer}</p>}
             </div>
           ))}
@@ -138,44 +165,57 @@ const Interview = () => {
       )
     }
 
-if (activeSection === "roadmap") {
-  if (!preparationPlan.length) {
-    return <p className="empty-state">No preparation plan generated yet.</p>
-  }
-  return (
-    <div className="roadmap-list">
-      {preparationPlan.map((item, idx) => (
-        <div className="roadmap-item" key={idx}>
-          <span className="step-number">{idx + 1}</span>
-          <div className="step-content">
-            <p className="step-title">{item.day}{item.focus ? ` — ${item.focus}` : ""}</p>
-            {item.topics?.length > 0 && (
-              <p className="step-description">
-                <strong>Topics:</strong> {item.topics.join(", ")}
-              </p>
-            )}
-            {item.tasks?.length > 0 && (
-              <ul className="step-tasks">
-                {item.tasks.map((task, taskIdx) => (
-                  <li key={taskIdx}>{task}</li>
-                ))}
-              </ul>
-            )}
-          </div>
+    if (activeSection === "roadmap") {
+      if (!preparationPlan.length) {
+        return <p className="empty-state">No preparation plan generated yet.</p>
+      }
+      return (
+        <div className="roadmap-list">
+          {preparationPlan.map((item, idx) => (
+            <div className="roadmap-item" key={idx}>
+              <div className="roadmap-marker">
+                <span className="step-number">{idx + 1}</span>
+                {idx < preparationPlan.length - 1 && <span className="step-line" />}
+              </div>
+              <div className="step-content">
+                <p className="step-title">
+                  {item.day && <span className="step-day">{item.day}</span>}
+                  {item.focus || ""}
+                </p>
+                {item.topics?.length > 0 && (
+                  <p className="step-description">
+                    <span className="step-label">Topics</span> {item.topics.join(" · ")}
+                  </p>
+                )}
+                {item.tasks?.length > 0 && (
+                  <ul className="step-tasks">
+                    {item.tasks.map((task, taskIdx) => (
+                      <li key={taskIdx}>{task}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
-  )
-}
+      )
+    }
 
     return null
   }
+
+  // 0-100 -> stroke-dashoffset for the arc gauge (circumference ≈ 214 for r=34, 3/4 arc)
+  const gaugeCircumference = 214
+  const gaugeOffset = matchScore !== null
+    ? gaugeCircumference - (gaugeCircumference * Math.min(matchScore, 100)) / 100
+    : gaugeCircumference
 
   return (
     <main className="interview">
       <div className="interview-layout">
 
         <aside className="sidebar left-sidebar">
+          <div className="brand-mark">Interview Report</div>
           <nav>
             {NAV_ITEMS.map((item) => (
               <button
@@ -183,23 +223,24 @@ if (activeSection === "roadmap") {
                 className={`nav-item ${activeSection === item.key ? "active" : ""}`}
                 onClick={() => setActiveSection(item.key)}
               >
+                <span className="nav-icon">{item.icon}</span>
                 {item.label}
               </button>
-              
             ))}
           </nav>
-          <button 
-          onClick={() => (getResumePdf(interviewId))}
-          className="sidebar-bottom-btn">
-            Download Ai generated Resume
+          <button
+            onClick={() => getResumePdf(interviewId)}
+            className="sidebar-bottom-btn"
+          >
+            Download tailored resume
           </button>
-
         </aside>
 
         <section className="main-content">
-          {isSample && (
-            <span className="sample-badge"></span>
-          )}
+          <div className="content-header">
+            <h1>{NAV_ITEMS.find((n) => n.key === activeSection)?.label}</h1>
+            {isSample && <span className="sample-badge">Sample data</span>}
+          </div>
           {renderMainContent()}
         </section>
 
@@ -207,8 +248,17 @@ if (activeSection === "roadmap") {
           {matchScore !== null && (
             <div className="match-score">
               <p className="sidebar-title">Match Score</p>
-              <div className="score-circle">
-                <span className="score-value">{matchScore}%</span>
+              <div className="gauge">
+                <svg viewBox="0 0 100 100">
+                  <circle className="gauge-track" cx="50" cy="50" r="34" />
+                  <circle
+                    className="gauge-value"
+                    cx="50" cy="50" r="34"
+                    strokeDasharray={gaugeCircumference}
+                    strokeDashoffset={gaugeOffset}
+                  />
+                </svg>
+                <span className="gauge-number">{matchScore}<small>%</small></span>
               </div>
             </div>
           )}

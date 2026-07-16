@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import "../style/home.scss"
 import { useInterview } from '../hook/useInterview'
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
+Link
 
 const Home = () => {
     const { loading, generateReport, reports, getReports } = useInterview()
@@ -149,11 +150,28 @@ const Home = () => {
                 </section>
             )}
 
-            <footer className="app-footer">
-                <div className="container footer-content">
-                    <p>&copy; {new Date().getFullYear()} AI Interview Generator. All rights reserved.</p>
-                </div>
-            </footer>
+{/* <footer className="app-footer">
+  <div className="container footer-content">
+    <div className="footer-top">
+      <div className="footer-brand">
+        <span className="footer-mark" />
+        <span className="footer-name">Interview Report</span>
+      </div>
+
+      <nav className="footer-links">
+        <Link to="/">Home</Link>
+        <Link to="/register">Register</Link>
+        <Link to="/login">Log in</Link>
+        <a href="mailto:hello@example.com">Contact</a>
+      </nav>
+    </div>
+
+    <div className="footer-bottom">
+      <p>&copy; {new Date().getFullYear()} Interview Report. All rights reserved.</p>
+      <p className="footer-credit">Built by Mehul Sharma</p>
+    </div>
+  </div>
+</footer> */}
         </main>
     )
 }
